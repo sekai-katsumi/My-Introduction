@@ -319,7 +319,7 @@ a-scene {
 a-scene canvas {
     width: 100vw !important;
     height: 100vh !important;
-    object-fit: cover;
+    object-fit: cover !important;
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -329,6 +329,9 @@ a-scene canvas {
     -webkit-transform: translateZ(0) !important;
     margin: 0 !important;
     padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+    background: black !important;
 }
 
 /* A-Frameコンテナの強制リセット */
@@ -347,12 +350,17 @@ a-scene .a-canvas {
     width: 100vw !important;
     height: 100vh !important;
     object-fit: cover !important;
+    object-position: center center !important;
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
     z-index: -1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: black !important;
 }
 
 /* iOS Safari特有の修正 */
@@ -1419,6 +1427,10 @@ input:checked + .slider:before {
         padding: 0 !important;
         border: none !important;
         outline: none !important;
+        max-width: none !important;
+        max-height: none !important;
+        min-width: 100vw !important;
+        min-height: 100vh !important;
     }
     
     /* AR.jsビデオ要素の強制配置 */
@@ -1426,10 +1438,13 @@ input:checked + .slider:before {
         width: 100vw !important;
         height: 100vh !important;
         object-fit: cover !important;
+        object-position: center center !important;
         position: fixed !important;
         top: 0 !important;
         left: 0 !important;
         z-index: -1 !important;
+        transform: scale(1.1) !important;
+        transform-origin: center center !important;
     }
     
     /* ヘッダーをAR画面上に固定表示 */
