@@ -295,6 +295,23 @@ class ARSceneManager {
             this.statusDisplay.showError("カメラアクセス失敗");
         });
 
+        // マーカー検出デバッグ用のイベント追加
+        this.arScene.addEventListener("markerFound", (event) => {
+            console.log("Global marker found event:", event.target.id);
+            this.statusDisplay.update(`ステータス: ${event.target.id} 検出中`, true, 2000);
+        });
+
+        this.arScene.addEventListener("markerLost", (event) => {
+            console.log("Global marker lost event:", event.target.id);
+        });
+
+        // 定期的なマーカー状態チェック（デバッグ用）
+        setInterval(() => {
+            if (this.isARReady) {
+                this.checkMarkerStatus();
+            }
+        }, 5000); // 5秒間隔
+
         // 強制的なAR Ready（最終手段）
         const isAndroidChrome = /Android.*Chrome|Android.*Edge/i.test(navigator.userAgent);
         const maxTimeout = isAndroidChrome ? 8000 : 3000; // Android用に長いタイムアウト
@@ -305,6 +322,19 @@ class ARSceneManager {
                 this.onARReady();
             }
         }, maxTimeout);
+
+        /**
+         * マーカー状態チェック（デバッグ用）
+         */
+        checkMarkerStatus() {
+            console.log("=== Marker Status Check ===");
+            this.instances.forEach(({ markerId, arMarker }) => {
+                const markerElement = document.querySelector(`#${markerId}`);
+                const isVisible = markerElement ? markerElement.object3D.visible : false;
+                console.log(`${markerId}: detected=${arMarker.isMarkerDetected()}, visible=${isVisible}`);
+            });
+            console.log("===========================");
+
     }
 
     /**

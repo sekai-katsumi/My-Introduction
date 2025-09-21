@@ -78,20 +78,20 @@
         arjs="
         sourceType: webcam;
         debugUIEnabled: false;
-        multiMarker: false;
-        independentMarkers: true;
-        maxDetectionRate: 60;
         detectionMode: mono_and_matrix;
         matrixCodeType: 3x3;
+        patternRatio: 0.8;
+        maxDetectionRate: 60;
         trackingMethod: best;
-        cameraParametersUrl: data/camera_para.dat;
-        displayWidth: 640;
-        displayHeight: 480;
         sourceWidth: 640;
-        sourceHeight: 480;"
+        sourceHeight: 480;
+        displayWidth: 640;
+        displayHeight: 480;"
         style="width: 100vw; height: 100vh; overflow: hidden; display: none; position: fixed; top: 0; left: 0;"
         vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false"
+        gesture-detector
+        raycaster="objects: .clickable"
     >
         <a-assets>
             <video id="video-01" 
@@ -121,34 +121,34 @@
         </a-assets>
 
         <a-marker type="pattern" url="./assets/marker-ptn01.patt" id="marker-01" 
-                patternRatio="0.5" markerhandler>
+                patternRatio="0.8" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
             <a-plane id="plane-01" 
-                        position="0 0 0" 
+                        position="0 0 0.01" 
                         rotation="-90 0 0" 
-                        width="2" 
-                        height="1.125"
+                        width="1.8" 
+                        height="1.0125"
                         material="src: #video-01; shader: flat; transparent: true; opacity: 0"
-                        visible="true"></a-plane>
+                        visible="false"></a-plane>
         </a-marker>
 
         <a-marker type="pattern" url="./assets/marker-ptn02.patt" id="marker-02" 
-                patternRatio="0.5" markerhandler>
+                patternRatio="0.8" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
             <a-plane id="plane-02" 
-                        position="0 0 0" 
+                        position="0 0 0.01" 
                         rotation="-90 0 0" 
-                        width="2" 
-                        height="1.125"
+                        width="1.8" 
+                        height="1.0125"
                         material="src: #video-02; shader: flat; transparent: true; opacity: 0"
                         visible="false"></a-plane>
         </a-marker>
 
         <a-marker type="pattern" url="./assets/marker-ptn03.patt" id="marker-03" 
-                patternRatio="0.5" markerhandler>
+                patternRatio="0.8" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
             <a-plane id="plane-03" 
-                        position="0 0 0" 
+                        position="0 0 0.01" 
                         rotation="-90 0 0" 
-                        width="2" 
-                        height="1.125"
+                        width="1.8" 
+                        height="1.0125"
                         material="src: #video-03; shader: flat; transparent: true; opacity: 0"
                         visible="false"></a-plane>
         </a-marker>
@@ -208,24 +208,34 @@
             document.addEventListener("keydown", (event) => {
                 if (!sceneManager.isARReady) return;
                 
-                switch(event.key) {
-                    case 'd': // デバッグ情報表示
-                        sceneManager.debugMarkerPositions();
-                        break;
-                    case 'r': // 位置リセット
-                        // sceneManager.resetAllPositions();
-                        console.log("Position reset disabled in single marker mode");
-                        break;
-                    case 'c': // 🆕 現在のアクティブマーカー表示
-                        console.log("Current active marker:", sceneManager.currentActiveMarker);
-                        break;
-                    case 's': // 🆕 単一表示モードの状態確認
-                        console.log("Single marker mode status:", {
-                            maxSimultaneous: sceneManager.maxSimultaneousMarkers,
-                            currentActive: sceneManager.currentActiveMarker,
-                            conflictDetection: sceneManager.conflictDetectionEnabled
-                        });
-                        break;
+            switch(event.key) {
+                case 'd': // デバッグ情報表示
+                    sceneManager.debugMarkerPositions();
+                    break;
+                case 'r': // 位置リセット
+                    console.log("Position reset disabled in single marker mode");
+                    break;
+                case 'c': // 現在のアクティブマーカー表示
+                    console.log("Current active marker:", sceneManager.currentActiveMarker);
+                    break;
+                case 's': // 単一表示モードの状態確認
+                    console.log("Single marker mode status:", {
+                        maxSimultaneous: sceneManager.maxSimultaneousMarkers,
+                        currentActive: sceneManager.currentActiveMarker,
+                        conflictDetection: sceneManager.conflictDetectionEnabled
+                    });
+                    break;
+                case 't': // 🆕 マーカー検出テスト
+                    console.log("Testing marker detection...");
+                    sceneManager.checkMarkerStatus();
+                    break;
+                case 'm': // 🆕 手動マーカーアクティベーション（テスト用）
+                    console.log("Manual marker activation test");
+                    const testMarker = sceneManager.instances[0];
+                    if (testMarker) {
+                        testMarker.arMarker.activateMarker();
+                    }
+                    break;
                     // case '1': // マーカー01の位置調整（無効化）
                     // case '2': // マーカー02の位置調整（無効化）
                     // case '3': // マーカー03の位置調整（無効化）

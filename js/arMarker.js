@@ -36,6 +36,17 @@ class ARMarker {
             this.handleMarkerLost();
         });
 
+        // AR.jsマーカーの直接イベント（代替手段）
+        this.marker.addEventListener("markervisible", (event) => {
+            console.log(`Marker visible: ${this.marker.id}`);
+            this.handleMarkerFound();
+        });
+
+        this.marker.addEventListener("markerinvisible", (event) => {
+            console.log(`Marker invisible: ${this.marker.id}`);
+            this.handleMarkerLost();
+        });
+
         console.log(`Events bound for marker: ${this.marker.id}`);
     }
 
