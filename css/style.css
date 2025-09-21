@@ -1,0 +1,1446 @@
+/* ============ CSSカスタムプロパティ (Variables) ============ */
+/* プロジェクト全体で利用する色やフォントサイズなどを定義 */
+:root {
+    /* プライマリカラー */
+    --primary: #4f46e5;
+    --primary-dark: #4338ca;
+    --primary-light: #7c3aed;
+
+    /* セカンダリカラー */
+    --secondary: #6b7280;
+    --secondary-dark: #4b5563;
+
+    /* グレー系 */
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --white: #fff;
+    --black: #000;
+
+    /* 特殊な背景色・グラデーション */
+    --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-card-light: linear-gradient(135deg, #f3e8ff 0%, #e0e7ff 100%);
+    --gradient-overlay: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    --gradient-info-light: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    --gradient-start-ar: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    --gradient-play-btn: linear-gradient(45deg, var(--primary), var(--primary-light));
+    --gradient-overlay-ar: linear-gradient(135deg, #ffeec8 0%, #271000 100%);
+
+    /* ステータスカラー */
+    --status-success: #10b981;
+    --status-warning: #f59e0b;
+    --status-error: #ef4444;
+
+    /* ステータス背景色（透過） */
+    --bg-success-light: #f0fdf4;
+    --bg-warning-light: #fffbeb;
+    --bg-error-light: #fef2f2;
+    --bg-info-light: #eff6ff;
+
+    /* ボーダーカラー */
+    --border-gray: var(--gray-200);
+    --border-primary: var(--primary);
+    --border-success: #bbf7d0;
+    --border-warning: #fed7aa;
+    --border-error: #fecaca;
+    --border-info: #bfdbfe;
+
+    /* フォントサイズ */
+    --font-size-sm: 0.9rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.1rem;
+    --font-size-xl: 1.2rem;
+    --font-size-2xl: 1.4rem;
+    --font-size-3xl: 1.8rem;
+    --font-size-4xl: 2.5rem;
+    --font-size-5xl: 4rem;
+
+    /* シャドウ */
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.3);
+
+    /* ヘッダー */
+    --header-bg-color: #333;
+    --header-text-color: var(--white);
+    --header-link-hover: #ddd;
+    --header-border: #444;
+    --header-height: 85px;
+}
+
+/* ============ グローバルスタイルと共通ユーティリティクラス ============ */
+/* 基本リセット */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    touch-action: manipulation;
+}
+
+/* 共通コンテナ */
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    padding-bottom: 4rem;
+}
+
+/* 共通カードスタイル */
+.card {
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-gray);
+    background: var(--white);
+}
+
+/* 共通ボタン（.btn-primary, .btn-secondaryなどと組み合わせて使用）*/
+.btn {
+    padding: 12px 24px;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-primary {
+    background: var(--gradient-play-btn);
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+}
+
+.btn-primary:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6);
+}
+
+.btn-gradient-ar {
+    background: var(--gradient-start-ar);
+    box-shadow: 0 4px 15px rgba(238, 90, 36, 0.4);
+}
+
+.btn-gradient-ar:hover {
+    box-shadow: 0 6px 20px rgba(238, 90, 36, 0.6);
+}
+
+/* 共通メッセージボックス */
+.message-box {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: var(--font-size-sm);
+    display: none;
+    transition: all 0.3s ease;
+}
+
+.message-box.show {
+    display: block;
+}
+
+.message-box.error {
+    background: var(--bg-error-light);
+    color: #dc2626; /* 固有の色のため直接指定 */
+    border: 1px solid var(--border-error);
+}
+
+.message-box.info {
+    background: var(--bg-info-light);
+    color: #1d4ed8; /* 固有の色のため直接指定 */
+    border: 1px solid var(--border-info);
+}
+
+/* レイアウトユーティリティ */
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ============ ARページ（index.html）関連のスタイル ============ */
+/* ARページ専用のbodyスタイル */
+body:not(.scrollable-page) {
+    overflow: hidden;
+    background: var(--black);
+    
+    /* iOS用セーフエリア対応 */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    
+    /* フルスクリーン対応 */
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+/* スクロール可能なページ（guide.html, infomation.html等）用のスタイル */
+body.scrollable-page {
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--gradient-hero);
+    min-height: 100vh;
+    position: static;
+    width: auto;
+    height: auto;
+}
+
+/* ユーザーインタラクション促進オーバーレイ */
+#interaction-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-overlay-ar);
+    display: flex; /* .flex-centerのスタイルを直接適用 */
+    justify-content: center;
+    align-items: center;
+    z-index: 101;
+    color: var(--white);
+}
+
+.interaction-prompt {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    max-width: 400px;
+    margin: 0 1rem;
+}
+
+.interaction-prompt p {
+    font-size: var(--font-size-lg);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+}
+
+#start-ar-btn {
+    padding: 15px 30px;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    border-radius: 30px;
+    
+    /* .btn, .btn-gradient-ar のスタイルを直接適用 */
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--gradient-start-ar);
+    box-shadow: 0 4px 15px rgba(238, 90, 36, 0.4);
+}
+
+#start-ar-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(238, 90, 36, 0.6);
+}
+
+/* 読み込みスピナー */
+#loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    display: flex; /* .flex-centerのスタイルを直接適用 */
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 99;
+}
+
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1.2s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#loading-percentage {
+    color: var(--white);
+    font-size: var(--font-size-md);
+    font-weight: 500;
+    margin-top: 10px;
+    opacity: 0.8;
+}
+
+/* A-Frameシーン - 全デバイス対応 */
+a-scene {
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+a-scene canvas {
+    width: 100vw !important;
+    height: 100vh !important;
+    object-fit: cover;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* A-Frameコンテナの強制リセット */
+a-scene .a-canvas {
+    width: 100vw !important;
+    height: 100vh !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+}
+
+/* AR.jsキャンバスの強制フルスクリーン */
+#arjs-video {
+    width: 100vw !important;
+    height: 100vh !important;
+    object-fit: cover !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: -1 !important;
+}
+
+/* iOS Safari特有の修正 */
+@supports (-webkit-touch-callout: none) {
+    body {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    #interaction-overlay {
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+    
+    a-scene {
+        -webkit-overflow-scrolling: touch;
+        -webkit-transform: translate3d(0,0,0);
+        transform: translate3d(0,0,0);
+        position: fixed !important;
+        width: 100vw !important;
+        height: 100vh !important;
+    }
+    
+    #arjs-video,
+    a-scene canvas,
+    a-scene .a-canvas {
+        width: 100vw !important;
+        height: 100vh !important;
+        object-fit: cover !important;
+        object-position: center center !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        transform: none !important;
+        -webkit-transform: none !important;
+        background: black !important;
+    }
+}
+
+/* パフォーマンス向上のためのGPU加速 */
+.spinner,
+#status-text,
+.interaction-prompt,
+#start-ar-btn {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+}
+
+/* ============ 固定ヘッダ関連のスタイル ============ */
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--header-bg-color);
+    color: var(--header-text-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    pointer-events: auto;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--header-border);
+}
+
+.header-logo a {
+    color: var(--header-text-color);
+    font-size: 1.5em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.header-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.header-nav a {
+    color: var(--header-text-color);
+    text-decoration: none;
+    font-size: var(--font-size-md);
+    transition: color 0.3s ease;
+}
+
+.header-nav a:hover {
+    color: var(--header-link-hover);
+}
+
+.header-debug {
+    padding: 5px 20px;
+    font-size: 0.8em;
+    background-color: #222;
+}
+
+.header-debug p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ============ 特典動画（透過再生）ページ関連 ============ */
+.benefit-container {
+    max-width: 1000px; /* .container のスタイルを直接適用 */
+    margin: 0 auto;
+    padding: 2rem;
+    padding-bottom: 4rem;
+    padding-top: calc(2rem + var(--header-height));
+}
+
+.video-section-wrapper {
+    margin: 2rem 0;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    background: transparent;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.video-container::before {
+    content: "";
+    display: block;
+    padding-top: 56.25%; /* 16:9比率 */
+}
+
+#videoPlayer, #chromaCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    display: none;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-overlay);
+    display: flex; /* .flex-centerのスタイルを直接適用 */
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: var(--white);
+}
+
+.play-icon {
+    font-size: var(--font-size-5xl);
+    margin-bottom: 1rem;
+    opacity: 0.6;
+}
+
+.video-overlay p {
+    font-size: var(--font-size-lg);
+    opacity: 0.8;
+    text-align: center;
+    margin: 0;
+}
+
+/* クロマキー設定 */
+.chromakey-card {
+    background: var(--gradient-card-light);
+    border: 1px solid #c4b5fd;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--shadow-md); /* .cardのスタイルを直接適用 */
+    border: 1px solid var(--border-gray);
+    background: var(--white);
+}
+
+.chromakey-card h3 {
+    color: #5b21b6;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: var(--font-size-2xl);
+}
+
+.chromakey-description {
+    color: #6b46c1;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: var(--font-size-md);
+}
+
+.control-group {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.control-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--white);
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    border: 1px solid #e0e7ff;
+}
+
+.control-label {
+    font-weight: 500;
+    color: var(--gray-700);
+    min-width: 120px;
+}
+
+/* トグルスイッチ */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 30px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: var(--white);
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary);
+}
+
+input:checked + .slider:before {
+    transform: translateX(30px);
+}
+
+/* カラーピッカー */
+#chromaColorPicker {
+    width: 50px;
+    height: 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* 感度スライダー */
+#chromaSensitivity {
+    flex: 1;
+    margin: 0 10px;
+}
+
+.sensitivity-value {
+    background: var(--primary);
+    color: var(--white);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    min-width: 30px;
+    text-align: center;
+}
+
+/* プリセットボタン */
+.chromakey-presets h4 {
+    color: var(--gray-700);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.preset-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.preset-btn {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--gray-200);
+    background: var(--white);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.preset-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.preset-btn.active {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+}
+
+/* 入力セクション */
+.input-section-wrapper {
+    margin: 3rem 0;
+}
+
+.input-card {
+    border-radius: 16px; /* .cardのスタイルを直接適用 */
+    padding: 2.5rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-gray);
+    background: var(--white);
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.input-card h2 {
+    color: var(--gray-800);
+    margin-bottom: 1rem;
+    font-size: var(--font-size-3xl);
+}
+
+.input-description {
+    color: var(--gray-500);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.input-group {
+    display: flex; /* .flex-centerのスタイルを直接適用 */
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+#videoCode {
+    padding: 12px 16px;
+    font-size: 1.5rem;
+    width: 140px;
+    text-align: center;
+    border: 2px solid var(--border-gray);
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+}
+
+#videoCode:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+#playBtn {
+    padding: 12px 24px; /* .btnのスタイルを直接適用 */
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px;
+
+    /* .btn-primaryのスタイルを直接適用 */
+    background: var(--gradient-play-btn);
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+}
+
+#playBtn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6);
+}
+
+#playBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.error-message {
+    margin-top: 1rem; /* .message-boxのスタイルを直接適用 */
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: var(--font-size-sm);
+    transition: all 0.3s ease;
+    display: none;
+
+    /* .message-box.errorのスタイルを直接適用 */
+    background: var(--bg-error-light);
+    color: #dc2626;
+    border: 1px solid var(--border-error);
+}
+
+.info-message.show {
+    margin-top: 1rem; /* .message-boxのスタイルを直接適用 */
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: var(--font-size-sm);
+    transition: all 0.3s ease;
+    display: block;
+
+    /* .message-box.infoのスタイルを直接適用 */
+    background: var(--bg-info-light);
+    color: #1d4ed8;
+    border: 1px solid var(--border-info);
+}
+
+/* テストコード表示 */
+.test-codes {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-200);
+}
+
+.test-codes h3 {
+    color: var(--gray-700);
+    margin-bottom: 1rem;
+    font-size: var(--font-size-xl);
+}
+
+.code-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.code-item {
+    background: #f8f9ff;
+    border: 1px solid #e0e7ff;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.code-item:hover {
+    background: #eef2ff;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.code-item .code {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.1em;
+}
+
+.code-item .description {
+    color: var(--gray-500);
+    font-size: var(--font-size-sm);
+}
+
+/* ガイドセクション */
+.guide-section {
+    margin: 3rem 0;
+}
+
+.guide-card {
+    background: var(--gradient-info-light);
+    border: 1px solid #bae6fd;
+    border-radius: 16px;
+    padding: 2rem;
+}
+
+.guide-card h3 {
+    color: #0369a1;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: var(--font-size-2xl);
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.tip-item {
+    display: flex;
+    gap: 1rem;
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e0f2fe;
+    transition: all 0.3s ease;
+}
+
+.tip-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.tip-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.tip-content h4 {
+    color: var(--gray-800);
+    margin: 0 0 0.5rem 0;
+    font-size: var(--font-size-lg);
+}
+
+.tip-content p {
+    color: var(--gray-500);
+    margin: 0;
+    line-height: 1.5;
+    font-size: var(--font-size-sm);
+}
+
+/* ============ 使い方ページ関連 ============ */
+.tutorial-container {
+    max-width: 1000px; /* .container のスタイルを直接適用 */
+    margin: 0 auto;
+    padding: 2rem;
+    padding-bottom: 4rem;
+    padding-top: calc(2rem + var(--header-height));
+}
+
+.hero-section {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: var(--gradient-hero);
+    color: var(--white);
+    border-radius: 12px;
+}
+
+.hero-section h1 {
+    font-size: var(--font-size-4xl);
+    margin-bottom: 1rem;
+}
+
+.hero-section p {
+    font-size: var(--font-size-xl);
+    opacity: 0.9;
+}
+
+.quick-start {
+    background: #f8f9ff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.quick-start h2 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    display: flex; /* .flex-centerのスタイルを直接適用 */
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.steps {
+    display: grid;
+    gap: 1rem;
+}
+
+.step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.step-number {
+    background: var(--primary);
+    color: var(--white);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex; /* .flex-centerのスタイルを直接適用 */
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.step-content h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--gray-800);
+}
+
+.step-content p {
+    margin: 0;
+    color: var(--gray-500);
+    line-height: 1.6;
+}
+
+.tutorial-section {
+    background: var(--white); /* .cardのスタイルを直接適用 */
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-gray);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.tutorial-section h2 {
+    color: var(--gray-800);
+    margin-bottom: 1.5rem;
+    display: flex; /* .flex-centerのスタイルを直接適用 */
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--font-size-3xl);
+}
+
+.tutorial-section h3 {
+    color: var(--gray-700);
+    margin: 2rem 0 1rem 0;
+    font-size: var(--font-size-2xl);
+}
+
+/* ============ サイト情報ページ関連 ============ */
+.requirements-container {
+    max-width: 1000px; /* .container のスタイルを直接適用 */
+    margin: 0 auto;
+    padding: 2rem;
+    padding-bottom: 4rem;
+    padding-top: calc(2rem + var(--header-height));
+}
+
+.compatibility-check {
+    background: var(--gradient-hero);
+    color: var(--white);
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.check-button {
+    background: rgba(255,255,255,0.2);
+    color: var(--white);
+    border: 2px solid var(--white);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.check-button:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.check-result {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    display: none;
+}
+
+.check-result.success {
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.5);
+}
+
+.check-result.error {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.requirements-section {
+    border-radius: 16px; /* .cardのスタイルを直接適用 */
+    padding: 2.5rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-gray);
+    background: var(--white);
+}
+
+/* informationページ内の各セクションの間に余白を追加 */
+.compatibility-check,
+.requirements-section {
+    margin-bottom: 2rem;
+}
+
+.requirements-section h2 {
+    color: var(--gray-800);
+    margin-bottom: 1.5rem;
+    display: flex; /* .flex-centerのスタイルを直接適用 */
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--font-size-3xl);
+}
+
+.browser-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.browser-card {
+    background: #f8f9ff;
+    border: 1px solid #e0e7ff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+}
+
+.browser-card.supported {
+    border-color: var(--status-success);
+    background: var(--bg-success-light);
+}
+
+.browser-card.limited {
+    border-color: var(--status-warning);
+    background: var(--bg-warning-light);
+}
+
+.browser-card.unsupported {
+    border-color: var(--status-error);
+    background: var(--bg-error-light);
+}
+
+.browser-card .icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.browser-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--gray-800);
+}
+
+.version-info {
+    color: var(--gray-500);
+    font-size: var(--font-size-sm);
+    margin-bottom: 1rem;
+}
+
+.status-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-badge.supported {
+    background: var(--status-success);
+    color: var(--white);
+}
+
+.status-badge.limited {
+    background: var(--status-warning);
+    color: var(--white);
+}
+
+.status-badge.unsupported {
+    background: var(--status-error);
+    color: var(--white);
+}
+
+.device-specs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.spec-card {
+    background: var(--gray-100);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.spec-card h4 {
+    color: var(--gray-800);
+    margin: 0 0 1rem 0;
+    display: flex; /* .flex-centerのスタイルを直接適用 */
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.spec-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.spec-list li {
+    color: var(--gray-700);
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.spec-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.permission-guide {
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.permission-guide h4 {
+    color: #92400e;
+    margin: 0 0 1rem 0;
+    display: flex; /* .flex-centerのスタイルを直接適用 */
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.permission-steps {
+    counter-reset: step-counter;
+}
+
+.permission-step {
+    counter-increment: step-counter;
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+    position: relative;
+}
+
+.permission-step::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: var(--status-warning);
+    color: var(--white);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex; /* .flex-centerのスタイルを直接適用 */
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.performance-info {
+    background: #e0f2fe;
+    border: 1px solid #81d4fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.performance-info h4 {
+    color: #0277bd;
+    margin: 0 0 1rem 0;
+    display: flex; /* .flex-centerのスタイルを直接適用 */
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.breadcrumb {
+    margin-bottom: 2rem;
+    color: var(--gray-500);
+}
+
+.breadcrumb a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-200);
+}
+
+.nav-btn {
+    background: var(--primary);
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: var(--primary-dark);
+    color: var(--white);
+}
+
+.nav-btn.secondary {
+    background: var(--secondary);
+}
+
+.nav-btn.secondary:hover {
+    background: var(--secondary-dark);
+}
+
+/* ============ レスポンシブ対応 ============ */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+        padding-bottom: 2rem;
+        padding-top: calc(1rem + var(--header-height));
+    }
+
+    .chromakey-card,
+    .input-card,
+    .requirements-section,
+    .guide-card,
+    .tutorial-section {
+        padding: 1.5rem;
+    }
+
+    .control-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .control-label {
+        min-width: auto;
+    }
+
+    .input-group {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    #videoCode {
+        width: 100%;
+        max-width: 200px;
+    }
+
+    #playBtn {
+        width: 100%;
+        max-width: 200px;
+    }
+
+    .code-list,
+    .tips-grid,
+    .browser-grid,
+    .device-specs {
+        grid-template-columns: 1fr;
+    }
+
+    .tip-item {
+        padding: 1rem;
+    }
+
+    .preset-buttons {
+        justify-content: center;
+    }
+
+    .preset-btn {
+        flex: 1;
+        min-width: 80px;
+    }
+
+    .distance-guide {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .navigation-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .interaction-prompt {
+        padding: 1.5rem;
+    }
+
+    .interaction-prompt p {
+        font-size: 1rem;
+    }
+
+    #start-ar-btn {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+}
+/* ============ モバイル専用AR強化スタイル ============ */
+@media (max-width: 768px) {
+    /* モバイルでのA-Frameフルスクリーン強制 */
+    a-scene,
+    a-scene canvas,
+    a-scene .a-canvas {
+        width: 100vw !important;
+        height: 100vh !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        outline: none !important;
+    }
+    
+    /* AR.jsビデオ要素の強制配置 */
+    #arjs-video {
+        width: 100vw !important;
+        height: 100vh !important;
+        object-fit: cover !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        z-index: -1 !important;
+    }
+    
+    /* ヘッダーをAR画面上に固定表示 */
+    .fixed-header {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        z-index: 10000 !important;
+        background-color: rgba(51, 51, 51, 0.9) !important; /* 半透明に変更 */
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+}
