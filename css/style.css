@@ -182,7 +182,7 @@ body {
 /* ARページ専用のbodyスタイル */
 body:not(.scrollable-page) {
     overflow: hidden;
-    background: var(--black);
+    background: transparent;
     
     /* iOS用セーフエリア対応 */
     padding-top: env(safe-area-inset-top);
@@ -331,7 +331,7 @@ a-scene canvas {
     padding: 0 !important;
     border: none !important;
     outline: none !important;
-    background: black !important;
+    background: transparent !important;
 }
 
 /* A-Frameコンテナの強制リセット */
@@ -360,7 +360,7 @@ a-scene .a-canvas {
     margin: 0 !important;
     padding: 0 !important;
     border: none !important;
-    background: black !important;
+    background: transparent !important;
 }
 
 /* iOS Safari特有の修正 */
@@ -402,7 +402,7 @@ a-scene .a-canvas {
         padding: 0 !important;
         transform: none !important;
         -webkit-transform: none !important;
-        background: black !important;
+        background: transparent !important;
     }
 }
 
