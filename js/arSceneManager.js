@@ -59,13 +59,78 @@ class ARSceneManager {
             this.loadingManager.show();
             this.statusDisplay.update("ステータス: カメラ初期化中...");
 
+            // Android Chrome/Edge専用の処理
+            const isAndroidChrome = /Android.*Chrome|Android.*Edge/i.test(navigator.userAgent);
+            
+            if (isAndroidChrome) {
+                console.log("Detected Android Chrome/Edge - using special initialization");
+                await this.initializeForAndroidChrome();
+            } else {
+                console.log("Standard browser initialization");
+                await this.standardInitialization();
+            }
+            
+        } catch (error) {
+            console.error("AR initialization failed:", error);
+            this.handleInitializationError("AR初期化失敗");
+        }
+    }
+
+    /**
+     * Android Chrome/Edge専用初期化
+     */
+    async initializeForAndroidChrome() {
+        try {
+            // カメラ権限を先に確認・取得
+            this.statusDisplay.update("ステータス: カメラアクセス確認中...");
+            
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    facingMode: 'environment',
+                    width: { ideal: 640, min: 320, max: 1280 },
+                    height: { ideal: 480, min: 240, max: 960 },
+                    frameRate: { ideal: 30, max: 30 }
+                } 
+            });
+            
+            console.log("Camera permission granted for Android Chrome/Edge");
+            
+            // ストリームを即座に停止（AR.jsに任せる）
+            stream.getTracks().forEach(track => track.stop());
+            
+            // A-Frameシーンを表示
+            this.arScene.style.display = "block";
+            
+            // Android Chrome/Edge用の長い初期化待機
+            this.statusDisplay.update("ステータス: ARカメラ初期化中...");
+            
+            // 段階的初期化
+            await this.prepareVideos();
+            this.initializeInstances();
+            
+            // AR.jsの完全な初期化を待つ
+            setTimeout(() => {
+                this.setupAREvents();
+                console.log("Android Chrome/Edge initialization complete");
+            }, 2000); // 2秒待機
+            
+        } catch (error) {
+            console.error("Android Chrome/Edge initialization failed:", error);
+            this.handleInitializationError(this.getErrorMessage(error));
+        }
+    }
+
+    /**
+     * 標準ブラウザ初期化（Firefox等）
+     */
+    async standardInitialization() {
+        try {
             // A-Frameシーンを先に表示
             this.arScene.style.display = "block";
             
-            // カメラ権限要求をA-Frameシーン表示後に遅延実行
+            // カメラ権限要求を遅延実行
             setTimeout(async () => {
                 try {
-                    console.log("Requesting camera permission...");
                     const stream = await navigator.mediaDevices.getUserMedia({ 
                         video: { 
                             facingMode: 'environment',
@@ -74,41 +139,42 @@ class ARSceneManager {
                             aspectRatio: { ideal: 4/3 }
                         } 
                     });
-                    console.log("Camera permission granted");
                     
-                    // ストリームを即座に停止（AR.jsが独自に管理するため）
                     stream.getTracks().forEach(track => track.stop());
-                    
-                    // AR初期化を続行
-                    this.statusDisplay.update("ステータス: AR初期化中...");
                     await this.continueARInitialization();
                     
                 } catch (error) {
-                    console.error("Camera permission denied:", error);
-                    
-                    // エラー時はオーバーレイを再表示
-                    this.arScene.style.display = "none";
-                    this.interactionOverlay.style.display = "flex";
-                    this.loadingManager.hide();
-                    
-                    let errorMessage = "カメラアクセス許可が必要です";
-                    if (error.name === 'NotAllowedError') {
-                        errorMessage = "カメラ権限が拒否されています。ブラウザ設定から権限を許可してページを再読み込みしてください。";
-                    } else if (error.name === 'NotFoundError') {
-                        errorMessage = "カメラが見つかりません。";
-                    } else if (error.name === 'NotReadableError') {
-                        errorMessage = "カメラが他のアプリで使用中です。";
-                    }
-                    
-                    this.statusDisplay.showError(errorMessage);
-                    return;
+                    this.handleInitializationError(this.getErrorMessage(error));
                 }
-            }, 500); // 500ms遅延
+            }, 500);
             
         } catch (error) {
-            console.error("AR initialization failed:", error);
-            this.statusDisplay.showError("AR初期化失敗");
+            this.handleInitializationError("標準初期化失敗");
         }
+    }
+
+    /**
+     * エラーメッセージ取得
+     */
+    getErrorMessage(error) {
+        if (error.name === 'NotAllowedError') {
+            return "カメラ権限が拒否されています。ブラウザ設定から権限を許可してページを再読み込みしてください。";
+        } else if (error.name === 'NotFoundError') {
+            return "カメラが見つかりません。";
+        } else if (error.name === 'NotReadableError') {
+            return "カメラが他のアプリで使用中です。";
+        }
+        return "カメラアクセス許可が必要です";
+    }
+
+    /**
+     * 初期化エラー処理
+     */
+    handleInitializationError(message) {
+        this.arScene.style.display = "none";
+        this.interactionOverlay.style.display = "flex";
+        this.loadingManager.hide();
+        this.statusDisplay.showError(message);
     }
 
     /**
@@ -209,14 +275,18 @@ class ARSceneManager {
         this.arScene.addEventListener("renderstart", () => {
             console.log("A-Frame render started");
             if (!this.isARReady) {
-                setTimeout(() => this.onARReady(), 1000);
+                const isAndroidChrome = /Android.*Chrome|Android.*Edge/i.test(navigator.userAgent);
+                const delay = isAndroidChrome ? 3000 : 1000; // Android Chrome/Edge用に長い遅延
+                setTimeout(() => this.onARReady(), delay);
             }
         });
 
         // カメラソース準備完了イベント
         this.arScene.addEventListener("sourceReady", () => {
             console.log("AR.js camera ready");
-            this.onARReady();
+            const isAndroidChrome = /Android.*Chrome|Android.*Edge/i.test(navigator.userAgent);
+            const delay = isAndroidChrome ? 1500 : 0; // Android用に追加遅延
+            setTimeout(() => this.onARReady(), delay);
         });
 
         // エラーハンドリング
@@ -225,13 +295,16 @@ class ARSceneManager {
             this.statusDisplay.showError("カメラアクセス失敗");
         });
 
-        // カメラアクセス成功の検知（代替手段）
+        // 強制的なAR Ready（最終手段）
+        const isAndroidChrome = /Android.*Chrome|Android.*Edge/i.test(navigator.userAgent);
+        const maxTimeout = isAndroidChrome ? 8000 : 3000; // Android用に長いタイムアウト
+        
         setTimeout(() => {
             if (!this.isARReady) {
-                console.log("Force AR ready after timeout");
+                console.log("Force AR ready after extended timeout for Android Chrome/Edge");
                 this.onARReady();
             }
-        }, 3000);
+        }, maxTimeout);
     }
 
     /**

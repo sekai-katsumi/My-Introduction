@@ -80,12 +80,15 @@
         debugUIEnabled: false;
         multiMarker: false;
         independentMarkers: true;
-        maxDetectionRate: 30;
+        maxDetectionRate: 60;
         detectionMode: mono_and_matrix;
         matrixCodeType: 3x3;
         trackingMethod: best;
+        cameraParametersUrl: data/camera_para.dat;
         displayWidth: 640;
-        displayHeight: 480;"
+        displayHeight: 480;
+        sourceWidth: 640;
+        sourceHeight: 480;"
         style="width: 100vw; height: 100vh; overflow: hidden; display: none; position: fixed; top: 0; left: 0;"
         vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false"
@@ -154,70 +157,84 @@
     </a-scene>
 
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        console.log("DOM loaded, initializing AR scene...");
-        
-        const sceneManager = new ARSceneManager({
-            loadingSelector: "#loading",
-            statusSelector: "#status-text",
-            interactionOverlaySelector: "#interaction-overlay"
-        });
-
-        // グローバルアクセス用（デバッグ目的）
-        window.arSceneManager = sceneManager;
-
-        // ユーザーインタラクションでAR開始
-        const startBtn = document.getElementById("start-ar-btn");
-        startBtn.addEventListener("click", async () => {
-            console.log("Start AR button clicked");
-            try {
-                await sceneManager.startAR();
-            } catch (error) {
-                console.error("Failed to start AR:", error);
+        // Android Chrome/Edge検出とbodyクラス追加
+        document.addEventListener("DOMContentLoaded", () => {
+            const userAgent = navigator.userAgent;
+            if (/Android.*Chrome/i.test(userAgent)) {
+                document.body.classList.add('android-chrome');
+                console.log("Detected Android Chrome");
+            } else if (/Android.*Edge/i.test(userAgent)) {
+                document.body.classList.add('android-edge');
+                console.log("Detected Android Edge");
             }
         });
+    </script>
 
-        // A-Frameシーンのエラーハンドリング
-        const arScene = document.getElementById("ar-scene");
-        arScene.addEventListener("enter-vr", () => {
-            console.log("AR scene entered");
-        });
-
-        arScene.addEventListener("exit-vr", () => {
-            console.log("AR scene exited");
-        });
-
-        // デバッグ用キーボードショートカット（デスクトップのみ）
-        document.addEventListener("keydown", (event) => {
-            if (!sceneManager.isARReady) return;
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log("DOM loaded, initializing AR scene...");
             
-            switch(event.key) {
-                case 'd': // デバッグ情報表示
-                    sceneManager.debugMarkerPositions();
-                    break;
-                case 'r': // 位置リセット
-                    // sceneManager.resetAllPositions();
-                    console.log("Position reset disabled in single marker mode");
-                    break;
-                case 'c': // 🆕 現在のアクティブマーカー表示
-                    console.log("Current active marker:", sceneManager.currentActiveMarker);
-                    break;
-                case 's': // 🆕 単一表示モードの状態確認
-                    console.log("Single marker mode status:", {
-                        maxSimultaneous: sceneManager.maxSimultaneousMarkers,
-                        currentActive: sceneManager.currentActiveMarker,
-                        conflictDetection: sceneManager.conflictDetectionEnabled
-                    });
-                    break;
-                // case '1': // マーカー01の位置調整（無効化）
-                // case '2': // マーカー02の位置調整（無効化）
-                // case '3': // マーカー03の位置調整（無効化）
-            }
-        });
+            const sceneManager = new ARSceneManager({
+                loadingSelector: "#loading",
+                statusSelector: "#status-text",
+                interactionOverlaySelector: "#interaction-overlay"
+            });
 
-        console.log("Event listeners attached with single marker debug controls");
-        console.log("Debug keys: d=debug info, c=current marker, s=single mode status");
-    });
+            // グローバルアクセス用（デバッグ目的）
+            window.arSceneManager = sceneManager;
+
+            // ユーザーインタラクションでAR開始
+            const startBtn = document.getElementById("start-ar-btn");
+            startBtn.addEventListener("click", async () => {
+                console.log("Start AR button clicked");
+                try {
+                    await sceneManager.startAR();
+                } catch (error) {
+                    console.error("Failed to start AR:", error);
+                }
+            });
+
+            // A-Frameシーンのエラーハンドリング
+            const arScene = document.getElementById("ar-scene");
+            arScene.addEventListener("enter-vr", () => {
+                console.log("AR scene entered");
+            });
+
+            arScene.addEventListener("exit-vr", () => {
+                console.log("AR scene exited");
+            });
+
+            // デバッグ用キーボードショートカット（デスクトップのみ）
+            document.addEventListener("keydown", (event) => {
+                if (!sceneManager.isARReady) return;
+                
+                switch(event.key) {
+                    case 'd': // デバッグ情報表示
+                        sceneManager.debugMarkerPositions();
+                        break;
+                    case 'r': // 位置リセット
+                        // sceneManager.resetAllPositions();
+                        console.log("Position reset disabled in single marker mode");
+                        break;
+                    case 'c': // 🆕 現在のアクティブマーカー表示
+                        console.log("Current active marker:", sceneManager.currentActiveMarker);
+                        break;
+                    case 's': // 🆕 単一表示モードの状態確認
+                        console.log("Single marker mode status:", {
+                            maxSimultaneous: sceneManager.maxSimultaneousMarkers,
+                            currentActive: sceneManager.currentActiveMarker,
+                            conflictDetection: sceneManager.conflictDetectionEnabled
+                        });
+                        break;
+                    // case '1': // マーカー01の位置調整（無効化）
+                    // case '2': // マーカー02の位置調整（無効化）
+                    // case '3': // マーカー03の位置調整（無効化）
+                }
+            });
+
+            console.log("Event listeners attached with single marker debug controls");
+            console.log("Debug keys: d=debug info, c=current marker, s=single mode status");
+        });
     </script>
 </body>
 </html>
