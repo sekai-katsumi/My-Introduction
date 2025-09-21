@@ -52,33 +52,70 @@ class ARSceneManager {
         try {
             console.log("Starting AR experience...");
             
-            // カメラ権限を明示的に要求
-            try {
-                await navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        facingMode: 'environment',
-                        width: { ideal: 1280, min: 640, max: 1920 },
-                        height: { ideal: 960, min: 480, max: 1080 },
-                        aspectRatio: { ideal: 4/3 }
-                    } 
-                });
-                console.log("Camera permission granted");
-            } catch (error) {
-                console.error("Camera permission denied:", error);
-                this.statusDisplay.showError("カメラアクセス許可が必要です");
-                return;
-            }
-            
             // インタラクションオーバーレイを非表示
             this.interactionOverlay.style.display = "none";
             
             // ローディング表示
             this.loadingManager.show();
-            this.statusDisplay.update("ステータス: AR初期化中...");
+            this.statusDisplay.update("ステータス: カメラ初期化中...");
 
-            // A-Frameシーンを表示
+            // A-Frameシーンを先に表示
             this.arScene.style.display = "block";
+            
+            // カメラ権限要求をA-Frameシーン表示後に遅延実行
+            setTimeout(async () => {
+                try {
+                    console.log("Requesting camera permission...");
+                    const stream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { 
+                            facingMode: 'environment',
+                            width: { ideal: 1280, min: 640, max: 1920 },
+                            height: { ideal: 960, min: 480, max: 1080 },
+                            aspectRatio: { ideal: 4/3 }
+                        } 
+                    });
+                    console.log("Camera permission granted");
+                    
+                    // ストリームを即座に停止（AR.jsが独自に管理するため）
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    // AR初期化を続行
+                    this.statusDisplay.update("ステータス: AR初期化中...");
+                    await this.continueARInitialization();
+                    
+                } catch (error) {
+                    console.error("Camera permission denied:", error);
+                    
+                    // エラー時はオーバーレイを再表示
+                    this.arScene.style.display = "none";
+                    this.interactionOverlay.style.display = "flex";
+                    this.loadingManager.hide();
+                    
+                    let errorMessage = "カメラアクセス許可が必要です";
+                    if (error.name === 'NotAllowedError') {
+                        errorMessage = "カメラ権限が拒否されています。ブラウザ設定から権限を許可してページを再読み込みしてください。";
+                    } else if (error.name === 'NotFoundError') {
+                        errorMessage = "カメラが見つかりません。";
+                    } else if (error.name === 'NotReadableError') {
+                        errorMessage = "カメラが他のアプリで使用中です。";
+                    }
+                    
+                    this.statusDisplay.showError(errorMessage);
+                    return;
+                }
+            }, 500); // 500ms遅延
+            
+        } catch (error) {
+            console.error("AR initialization failed:", error);
+            this.statusDisplay.showError("AR初期化失敗");
+        }
+    }
 
+    /**
+     * AR初期化の継続処理
+     */
+    async continueARInitialization() {
+        try {
             // 動画要素の準備とユーザーインタラクション設定
             await this.prepareVideos();
             
@@ -94,7 +131,7 @@ class ARSceneManager {
             }
             
         } catch (error) {
-            console.error("AR initialization failed:", error);
+            console.error("AR initialization continuation failed:", error);
             this.statusDisplay.showError("AR初期化失敗");
         }
     }
@@ -200,23 +237,26 @@ class ARSceneManager {
     /**
      * AR準備完了時の処理
      */
-        onARReady() {
+    onARReady() {
         if (this.isARReady) return; // 重複実行防止
         
         this.isARReady = true;
         console.log("AR ready, binding marker events with single display mode");
 
-        // マーカーイベントをバインド（1件表示モード）
-        this.instances.forEach(({ arMarker, markerId, offset }) => {
-            arMarker.bindEvents();
-            console.log(`Marker events bound: ${markerId} in single display mode`);
-        });
+        // Chrome/Edge用の追加初期化遅延
+        setTimeout(() => {
+            // マーカーイベントをバインド（1件表示モード）
+            this.instances.forEach(({ arMarker, markerId, offset }) => {
+                arMarker.bindEvents();
+                console.log(`Marker events bound: ${markerId} in single display mode`);
+            });
 
-        // ローディング非表示
-        this.loadingManager.hide();
-        this.statusDisplay.update("ステータス: マーカーを探しています...");
-        
-        console.log("AR Scene Manager fully initialized with single marker display mode");
+            // ローディング非表示
+            this.loadingManager.hide();
+            this.statusDisplay.update("ステータス: マーカーを探しています...");
+            
+            console.log("AR Scene Manager fully initialized with single marker display mode");
+        }, 1000); // Chrome/Edge用に1秒遅延
     }
 
     /**

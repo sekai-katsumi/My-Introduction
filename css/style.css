@@ -1459,3 +1459,25 @@ input:checked + .slider:before {
         -webkit-backdrop-filter: blur(10px);
     }
 }
+/* Chrome/Edge特有の問題対応 */
+@media screen and (max-width: 768px) {
+    /* Android Chrome/Edge用の強制カメラ表示 */
+    a-scene[arjs-device-orientation-controls] {
+        background: transparent !important;
+    }
+    
+    a-scene .a-enter-vr {
+        display: none !important;
+    }
+    
+    /* カメラストリーム要素の強制表示 */
+    video[autoplay] {
+        object-fit: cover !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        z-index: -1 !important;
+    }
+}
