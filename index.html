@@ -19,12 +19,16 @@
     <link rel="apple-touch-icon" href="./assets/images/icon-192.png">
 
     <!-- 事前ロード -->
-    <link rel="preload" as="video" href="./assets/videos/video-01.mp4" type="video/mp4">
-    <link rel="preload" as="video" href="./assets/videos/video-02.mp4" type="video/mp4">
-    <link rel="preload" as="video" href="./assets/videos/video-03.mp4" type="video/mp4">
+    <!-- 高優先度 -->
     <link rel="preload" as="fetch" href="./assets/markers/marker-ptn01.patt" crossorigin="anonymous">
     <link rel="preload" as="fetch" href="./assets/markers/marker-ptn02.patt" crossorigin="anonymous">
     <link rel="preload" as="fetch" href="./assets/markers/marker-ptn03.patt" crossorigin="anonymous">
+    
+    <!-- 遅延動画 -->
+    <link rel="prefetch" as="video" href="./assets/videos/video-01.mp4" type="video/mp4">
+    <link rel="prefetch" as="video" href="./assets/videos/video-02.mp4" type="video/mp4">
+    <link rel="prefetch" as="video" href="./assets/videos/video-03.mp4" type="video/mp4">
+
 
     <!-- ライブラリ -->
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
@@ -113,7 +117,7 @@
                 loop 
                 muted 
                 playsinline 
-                preload="metadata"
+                preload="none"
                 crossorigin="anonymous"
                 webkit-playsinline="true"></video>
             <video id="video-02" 
@@ -121,7 +125,7 @@
                 loop 
                 muted 
                 playsinline 
-                preload="metadata"
+                preload="none"
                 crossorigin="anonymous"
                 webkit-playsinline="true"></video>
             <video id="video-03" 
@@ -129,7 +133,7 @@
                 loop 
                 muted 
                 playsinline 
-                preload="metadata"
+                preload="none"
                 crossorigin="anonymous"
                 webkit-playsinline="true"></video>
         </a-assets>

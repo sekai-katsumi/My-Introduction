@@ -45,22 +45,46 @@ class LoadingManager {
     /**
      * 読み込み進捗率を更新
      */
-    updateProgress(percentage) {
+        updateProgress(percentage) {
         if (!this.pctEl) return;
         
         // 進捗率を0-100の範囲で制限
         percentage = Math.max(0, Math.min(100, percentage));
-        this.currentProgress = percentage;
         
-        this.pctEl.innerText = `Loading: ${Math.round(percentage)}%`;
-        
-        // プログレスバーの更新
+        // スムーズなプログレスバー更新
         const progressFill = this.el.querySelector(".progress-fill");
         if (progressFill) {
+            progressFill.style.transition = "width 0.3s ease-out";
             progressFill.style.width = `${percentage}%`;
         }
         
+        // 数値の変更もアニメーション化
+        this.animatePercentage(this.currentProgress, percentage);
+        this.currentProgress = percentage;
+        
         console.log(`Loading progress: ${percentage}%`);
+    }
+
+    /**
+     * パーセンテージ表示のアニメーション
+     */
+    animatePercentage(from, to) {
+        const duration = 300;
+        const startTime = Date.now();
+        
+        const animate = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const current = Math.floor(from + (to - from) * progress);
+            
+            this.pctEl.innerText = `Loading: ${current}%`;
+            
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        };
+        
+        animate();
     }
 
     /**

@@ -295,15 +295,6 @@ body.scrollable-page {
     position: relative;
 }
 
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-    border-radius: 4px;
-    width: 0%;
-    transition: width 0.3s ease;
-    position: relative;
-}
-
 .progress-fill::after {
     content: '';
     position: absolute;
@@ -311,8 +302,41 @@ body.scrollable-page {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
-    animation: shimmer 2s infinite;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+    animation: shimmer 1.5s infinite ease-in-out;
+}
+
+/* プログレスバーのスムーズな変化 */
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+/* 読み込み中の詳細ステータス表示強化 */
+.loading-status {
+    color: var(--white);
+    font-size: var(--font-size-sm);
+    opacity: 0.9;
+    text-align: center;
+    transition: opacity 0.3s ease;
+    min-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#loading-percentage {
+    color: var(--white);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin-top: 10px;
+    opacity: 0.95;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
 }
 
 @keyframes shimmer {
