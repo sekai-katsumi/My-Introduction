@@ -360,6 +360,9 @@ class ARSceneManager {
             
             console.log("AR Scene Manager fully initialized with single marker display mode");
 
+            // マーカー状態の定期監視を開始
+            this.startMarkerMonitoring();
+
             // デバッグ用：マーカー検出テストを実行
             setTimeout(() => {
                 this.forceMarkerDetectionTest();
@@ -395,6 +398,42 @@ class ARSceneManager {
                 }, 1000);
             }
         });
+    }
+
+    /**
+     * マーカー状態の定期監視
+     */
+    startMarkerMonitoring() {
+        setInterval(() => {
+            if (!this.isARReady) return;
+            
+            let activeCount = 0;
+            let detectedMarkers = [];
+            
+            this.instances.forEach(({ markerId, arMarker }) => {
+                const markerElement = document.querySelector(`#${markerId}`);
+                const isVisible = markerElement && markerElement.object3D && markerElement.object3D.visible;
+                const isDetected = arMarker.isMarkerDetected();
+                
+                if (isDetected) {
+                    activeCount++;
+                    detectedMarkers.push(markerId);
+                }
+                
+                // デバッグ出力
+                if (isVisible !== isDetected) {
+                    console.log(`Marker state mismatch: ${markerId} - visible:${isVisible}, detected:${isDetected}`);
+                }
+            });
+            
+            // アクティブマーカーの状態確認
+            if (activeCount === 0 && this.currentActiveMarker) {
+                console.log("No active markers detected, resetting status...");
+                this.currentActiveMarker = null;
+                this.statusDisplay.update("ステータス: マーカーを探しています...");
+            }
+            
+        }, 2000); // 2秒毎に監視
     }
 
     /**
@@ -502,7 +541,7 @@ class ARSceneManager {
             console.log(`Deactivating current marker: ${this.currentActiveMarker} to show: ${markerId}`);
             const currentInstance = this.instances.find(inst => inst.markerId === this.currentActiveMarker);
             if (currentInstance) {
-                currentInstance.arMarker.forceDeactivate(); // 強制非アクティブ化
+                currentInstance.arMarker.forceDeactivate();
             }
         }
         
@@ -510,7 +549,16 @@ class ARSceneManager {
         this.currentActiveMarker = markerId;
         this.statusDisplay.update(`ステータス: ${markerId} 表示中（単一表示モード）`);
         console.log(`Single marker mode: Activated ${markerId}`);
+        
+        // 5秒後に自動的にステータスをリセット（安定性向上）
+        setTimeout(() => {
+            if (this.currentActiveMarker === markerId) {
+                this.statusDisplay.update(`ステータス: ${markerId} 認識継続中...`);
+            }
+        }, 5000);
+        
         return true;
+
     }
 
     /**

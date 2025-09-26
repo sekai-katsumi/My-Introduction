@@ -114,7 +114,7 @@ class ARMarker {
         this.lostTimeout = setTimeout(() => {
             this.deactivateMarker();
             this.lostTimeout = null;
-        }, 500); // 500ms の遅延で消失処理
+        }, 1500); // 1.5秒に延長して安定性向上
     }
 
     /**
@@ -123,7 +123,18 @@ class ARMarker {
     activateMarker() {
         if (this.isDetected) return;
         
-        // 🆕 ARSceneManagerで単一表示制御をチェック
+        // マーカー検出強度をチェック
+        const markerElement = this.marker;
+        if (markerElement && markerElement.object3D) {
+            const confidence = this.getMarkerConfidence();
+            if (confidence < 0.3) {
+                console.log(`Marker confidence too low: ${confidence} for ${this.marker.id}`);
+                return;
+            }
+            console.log(`Marker confidence: ${confidence} for ${this.marker.id}`);
+        }
+        
+        // ARSceneManagerで単一表示制御をチェック
         if (window.arSceneManager && !window.arSceneManager.handleMarkerActivation(this.marker.id, this)) {
             console.log(`Marker activation blocked by single display mode: ${this.marker.id}`);
             return;
@@ -210,6 +221,30 @@ class ARMarker {
     getLastDetectionTime() {
         return this.lastDetectionTime;
     }
+
+    /**
+     * マーカー検出の信頼度を取得
+     */
+    getMarkerConfidence() {
+        try {
+            if (this.marker && this.marker.object3D && this.marker.object3D.visible) {
+                // マーカーの可視性を基準にした簡易信頼度計算
+                const scale = this.marker.object3D.scale;
+                const position = this.marker.object3D.position;
+                
+                // スケールと位置の安定性で信頼度を算出
+                const scaleStability = Math.min(scale.x, scale.y, scale.z);
+                const positionStability = 1.0 / (1.0 + Math.abs(position.z));
+                
+                return Math.min(scaleStability * positionStability, 1.0);
+            }
+            return 0;
+        } catch (error) {
+            console.warn(`Error calculating marker confidence: ${error}`);
+            return 0.5; // デフォルト値
+        }
+    }
+
 
     /**
      * リソース解放

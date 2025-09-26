@@ -89,14 +89,13 @@
         debugUIEnabled: false;
         detectionMode: mono_and_matrix;
         matrixCodeType: 3x3;
-        patternRatio: 0.9;
-        maxDetectionRate: 30;
+        patternRatio: 0.8;
+        maxDetectionRate: 60;
         trackingMethod: best;
-        sourceWidth: 1280;
-        sourceHeight: 960;
-        displayWidth: 1280;
-        displayHeight: 960;
-        cameraParametersUrl: data/camera_para.dat;"
+        sourceWidth: 640;
+        sourceHeight: 480;
+        displayWidth: 640;
+        displayHeight: 480;"
         style="width: 100vw; height: 100vh; overflow: hidden; display: none; position: fixed; top: 0; left: 0;"
         vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false"
@@ -131,11 +130,11 @@
         </a-assets>
 
         <a-marker type="pattern" url="./assets/markers/marker-ptn01.patt" id="marker-01" 
-                patternRatio="0.9" 
+                patternRatio="0.8" 
                 smooth="true" 
-                smoothCount="5" 
-                smoothTolerance="0.02" 
-                smoothThreshold="2"
+                smoothCount="10" 
+                smoothTolerance="0.05" 
+                smoothThreshold="5"
                 raycaster="objects: .clickable">
             <a-plane id="plane-01" 
                         position="0 0 0.01" 
@@ -147,11 +146,11 @@
         </a-marker>
 
         <a-marker type="pattern" url="./assets/markers/marker-ptn02.patt" id="marker-02" 
-                patternRatio="0.9" 
+                patternRatio="0.8" 
                 smooth="true" 
-                smoothCount="5" 
-                smoothTolerance="0.02" 
-                smoothThreshold="2"
+                smoothCount="10" 
+                smoothTolerance="0.05" 
+                smoothThreshold="5"
                 raycaster="objects: .clickable">
             <a-plane id="plane-02" 
                         position="0 0 0.01" 
@@ -163,11 +162,11 @@
         </a-marker>
 
         <a-marker type="pattern" url="./assets/markers/marker-ptn03.patt" id="marker-03" 
-                patternRatio="0.9" 
+                patternRatio="0.8" 
                 smooth="true" 
-                smoothCount="5" 
-                smoothTolerance="0.02" 
-                smoothThreshold="2"
+                smoothCount="10" 
+                smoothTolerance="0.05" 
+                smoothThreshold="5"
                 raycaster="objects: .clickable">
             <a-plane id="plane-03" 
                         position="0 0 0.01" 
