@@ -11,25 +11,32 @@
     <!-- CSS -->
     <link rel="stylesheet" href="./css/style.css" />
 
+    <!-- PWA -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="WebAR">
+    <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
+
     <!-- 事前ロード -->
-    <link rel="preload" as="video" href="./assets/video-01.mp4" type="video/mp4">
-    <link rel="preload" as="video" href="./assets/video-02.mp4" type="video/mp4">
-    <link rel="preload" as="video" href="./assets/video-03.mp4" type="video/mp4">
-    <link rel="preload" as="fetch" href="./assets/marker-ptn01.patt" crossorigin="anonymous">
-    <link rel="preload" as="fetch" href="./assets/marker-ptn02.patt" crossorigin="anonymous">
-    <link rel="preload" as="fetch" href="./assets/marker-ptn03.patt" crossorigin="anonymous">
+    <link rel="preload" as="video" href="./assets/videos/video-01.mp4" type="video/mp4">
+    <link rel="preload" as="video" href="./assets/videos/video-02.mp4" type="video/mp4">
+    <link rel="preload" as="video" href="./assets/videos/video-03.mp4" type="video/mp4">
+    <link rel="preload" as="fetch" href="./assets/markers/marker-ptn01.patt" crossorigin="anonymous">
+    <link rel="preload" as="fetch" href="./assets/markers/marker-ptn02.patt" crossorigin="anonymous">
+    <link rel="preload" as="fetch" href="./assets/markers/marker-ptn03.patt" crossorigin="anonymous">
 
     <!-- ライブラリ -->
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 
     <!-- JavaScript -->
-    <script src="./js/videoPlayer.js" defer></script>
-    <script src="./js/videoPlane.js" defer></script>
-    <script src="./js/arMarker.js" defer></script>
-    <script src="./js/loadingManager.js" defer></script>
-    <script src="./js/statusDisplay.js" defer></script>
-    <script src="./js/arSceneManager.js" defer></script>
+    <script src="./js/core/loadingManager.js" defer></script>
+    <script src="./js/core/statusDisplay.js" defer></script>
+    <script src="./js/video/videoPlayer.js" defer></script>
+    <script src="./js/video/videoPlane.js" defer></script>
+    <script src="./js/ar/arMarker.js" defer></script>
+    <script src="./js/ar/arSceneManager.js" defer></script>
 
     <!-- ファビコン -->
     <link rel="icon" href="./favicon.ico" type="image/x-icon" />
@@ -97,7 +104,7 @@
     >
         <a-assets>
             <video id="video-01" 
-                src="./assets/video-01.mp4" 
+                src="./assets/videos/video-01.mp4" 
                 loop 
                 muted 
                 playsinline 
@@ -105,7 +112,7 @@
                 crossorigin="anonymous"
                 webkit-playsinline="true"></video>
             <video id="video-02" 
-                src="./assets/video-02.mp4" 
+                src="./assets/videos/video-02.mp4" 
                 loop 
                 muted 
                 playsinline 
@@ -113,7 +120,7 @@
                 crossorigin="anonymous"
                 webkit-playsinline="true"></video>
             <video id="video-03" 
-                src="./assets/video-03.mp4" 
+                src="./assets/videos/video-03.mp4" 
                 loop 
                 muted 
                 playsinline 
@@ -122,7 +129,7 @@
                 webkit-playsinline="true"></video>
         </a-assets>
 
-        <a-marker type="pattern" url="./assets/marker-ptn01.patt" id="marker-01" 
+        <a-marker type="pattern" url="./assets/markers/marker-ptn01.patt" id="marker-01" 
                 patternRatio="0.8" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
             <a-plane id="plane-01" 
                         position="0 0 0.01" 
@@ -133,7 +140,7 @@
                         visible="false"></a-plane>
         </a-marker>
 
-        <a-marker type="pattern" url="./assets/marker-ptn02.patt" id="marker-02" 
+        <a-marker type="pattern" url="./assets/markers/marker-ptn02.patt" id="marker-02" 
                 patternRatio="0.8" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
             <a-plane id="plane-02" 
                         position="0 0 0.01" 
@@ -144,7 +151,7 @@
                         visible="false"></a-plane>
         </a-marker>
 
-        <a-marker type="pattern" url="./assets/marker-ptn03.patt" id="marker-03" 
+        <a-marker type="pattern" url="./assets/markers/marker-ptn03.patt" id="marker-03" 
                 patternRatio="0.8" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
             <a-plane id="plane-03" 
                         position="0 0 0.01" 
@@ -247,6 +254,15 @@
             console.log("Event listeners attached with single marker debug controls");
             console.log("Debug keys: d=debug info, c=current marker, s=single mode status");
         });
+    </script>
+
+    <!-- キャッシュ登録: トップ画面・ガイド・動画ファイル -->
+    <script>
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./js/core/serviceWorker.js')
+        .then(() => console.log("Service Worker registered"))
+        .catch(err => console.error("SW registration failed:", err));
+    }
     </script>
 
     <!-- Google向けSEO: JSON-LD構造化データ -->
