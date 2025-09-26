@@ -29,8 +29,6 @@ myIntroduction/
 │       ├── serviceWorker.js
 │       └── statusDisplay.js
 ├── pages/
-│   ├── favicon.ico
-│   ├── index.html
 │   ├── guide.html
 │   ├── benefit.html
 │   └── information.html

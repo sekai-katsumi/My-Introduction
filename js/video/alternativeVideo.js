@@ -15,15 +15,15 @@ class AlternativeVideoPlayer {
         // 動画と設定のマッピングを拡張
         this.videoMapping = {
             '1111': {
-                src: './assets/videos/video-01.mp4',
+                src: '../assets/videos/video-01.mp4',
                 chromaKeyColor: { r: 43, g: 69, b: 81 }    // 例: video-01の背景色 (#2B4551)
             },
             '2222': {
-                src: './assets/videos/video-02.mp4',
+                src: '../assets/videos/video-02.mp4',
                 chromaKeyColor: { r: 251, g: 238, b: 103 } // 例: video-02の背景色 (#FBEE67)
             },
             '3333': {
-                src: './assets/videos/video-03.mp4',
+                src: '../assets/videos/video-03.mp4',
                 chromaKeyColor: { r: 81, g: 218, b: 93 }   // 例: video-03の背景色 (#51DA5D)
             }
         };
