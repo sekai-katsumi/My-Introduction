@@ -5,6 +5,8 @@ class VideoPlayer {
         this.playAttempted = false;
         this.retryCount = 0;
         this.maxRetries = 3;
+        this.audioEnabled = true; // 音声有効フラグ
+        this.defaultVolume = 0.8; // デフォルト音量
         
         if (!this.video) {
             console.error(`Video element not found: ${selector}`);
@@ -14,16 +16,19 @@ class VideoPlayer {
         // iOS Safari対応のための設定
         this.video.setAttribute('webkit-playsinline', 'true');
         this.video.setAttribute('playsinline', 'true');
-        this.video.muted = true; // 自動再生のためミュート必須
+        
+        // 音声設定：最初はミュート、ユーザー操作後に有効化
+        this.video.muted = true; // 自動再生のため初期はミュート
+        this.video.volume = this.defaultVolume;
         
         // 動画の状態をログ出力
         this.setupVideoEvents();
         
-        console.log(`VideoPlayer initialized: ${this.video.id}`);
+        console.log(`VideoPlayer initialized: ${this.video.id} with audio support`);
     }
 
     /**
-     * 動画イベントリスナー設定（デバッグ用）
+     * 動画イベントリスナー設定（音声対応版）
      */
     setupVideoEvents() {
         this.video.addEventListener('loadstart', () => {
@@ -41,7 +46,12 @@ class VideoPlayer {
         this.video.addEventListener('playing', () => {
             console.log(`Video ${this.video.id}: Started playing`);
             this.playing = true;
-            this.retryCount = 0; // 成功時はリトライカウントをリセット
+            this.retryCount = 0;
+            
+            // 音声を有効化（ユーザー操作後）
+            if (this.audioEnabled && this.video.muted) {
+                this.enableAudio();
+            }
         });
 
         this.video.addEventListener('pause', () => {
@@ -66,10 +76,15 @@ class VideoPlayer {
         this.video.addEventListener('waiting', () => {
             console.warn(`Video ${this.video.id}: Waiting for data`);
         });
+
+        // 音声関連イベント
+        this.video.addEventListener('volumechange', () => {
+            console.log(`Video ${this.video.id}: Volume changed to ${this.video.volume}, muted: ${this.video.muted}`);
+        });
     }
 
     /**
-     * 動画再生（エラーハンドリング強化）
+     * 動画再生（音声対応版）
      */
     async play() {
         if (!this.video || this.playing) {
@@ -78,13 +93,15 @@ class VideoPlayer {
 
         try {
             // 動画が準備できるまで待機
-            if (this.video.readyState < 2) { // HAVE_CURRENT_DATAまで待つ
+            if (this.video.readyState < 2) {
                 await this.waitForVideoReady();
             }
 
             console.log(`Attempting to play video: ${this.video.id} (attempt ${this.retryCount + 1})`);
             
-            // 再生試行
+            // 最初はミュートで再生開始
+            this.video.muted = true;
+            
             const playPromise = this.video.play();
             
             if (playPromise !== undefined) {
@@ -92,6 +109,13 @@ class VideoPlayer {
                 this.playing = true;
                 this.playAttempted = true;
                 console.log(`Successfully playing video: ${this.video.id}`);
+                
+                // 再生開始後、少し遅延して音声を有効化
+                if (this.audioEnabled) {
+                    setTimeout(() => {
+                        this.enableAudio();
+                    }, 500);
+                }
             }
 
         } catch (error) {
@@ -100,7 +124,7 @@ class VideoPlayer {
             // リトライ処理
             if (this.retryCount < this.maxRetries) {
                 this.retryCount++;
-                setTimeout(() => this.play(), 500 * this.retryCount); // 指数バックオフ
+                setTimeout(() => this.play(), 500 * this.retryCount);
                 return;
             }
             
@@ -110,6 +134,66 @@ class VideoPlayer {
                 this.requestUserInteraction();
             }
         }
+    }
+
+    /**
+     * 音声を有効化
+     */
+    enableAudio() {
+        if (!this.video || !this.audioEnabled) return;
+        
+        try {
+            // ユーザージェスチャーが必要な場合の処理
+            const enableAudioGesture = () => {
+                this.video.muted = false;
+                this.video.volume = this.defaultVolume;
+                console.log(`Audio enabled for ${this.video.id}, volume: ${this.video.volume}`);
+                
+                // 一回だけ実行するためイベントリスナーを削除
+                document.removeEventListener('click', enableAudioGesture);
+                document.removeEventListener('touchstart', enableAudioGesture);
+            };
+            
+            // 直接音声有効化を試行
+            this.video.muted = false;
+            
+            // 失敗した場合はユーザージェスチャーを待つ
+            if (this.video.muted) {
+                console.log(`Audio requires user gesture for ${this.video.id}`);
+                document.addEventListener('click', enableAudioGesture, { once: true });
+                document.addEventListener('touchstart', enableAudioGesture, { once: true });
+            } else {
+                console.log(`Audio immediately enabled for ${this.video.id}`);
+            }
+            
+        } catch (error) {
+            console.warn(`Failed to enable audio for ${this.video.id}:`, error);
+        }
+    }
+
+    /**
+     * 音声を無効化
+     */
+    disableAudio() {
+        if (!this.video) return;
+        
+        this.video.muted = true;
+        console.log(`Audio disabled for ${this.video.id}`);
+    }
+
+    /**
+     * 音声の有効/無効を切り替え
+     */
+    toggleAudio() {
+        if (!this.video) return;
+        
+        if (this.video.muted) {
+            this.enableAudio();
+        } else {
+            this.disableAudio();
+        }
+        
+        return !this.video.muted;
     }
 
     /**
@@ -182,6 +266,12 @@ class VideoPlayer {
                 this.video.style.pointerEvents = '';
                 this.video.style.zIndex = '';
                 this.video.style.cursor = '';
+                
+                // ユーザー操作後に音声を有効化
+                if (this.audioEnabled) {
+                    this.enableAudio();
+                }
+                
                 console.log(`User interaction enabled playback for: ${this.video.id}`);
             } catch (error) {
                 console.error(`User interaction play failed: ${error}`);
@@ -205,7 +295,7 @@ class VideoPlayer {
      * 動画の準備状態確認
      */
     isReady() {
-        return this.video && this.video.readyState >= 2; // HAVE_CURRENT_DATA
+        return this.video && this.video.readyState >= 2;
     }
 
     /**
@@ -213,6 +303,13 @@ class VideoPlayer {
      */
     isPlaying() {
         return this.playing && !this.video.paused;
+    }
+
+    /**
+     * 音声有効状態確認
+     */
+    isAudioEnabled() {
+        return this.video && !this.video.muted && this.audioEnabled;
     }
 
     /**
@@ -234,7 +331,34 @@ class VideoPlayer {
      */
     setVolume(volume) {
         if (!this.video) return;
-        this.video.volume = Math.max(0, Math.min(1, volume));
+        
+        volume = Math.max(0, Math.min(1, volume));
+        this.video.volume = volume;
+        this.defaultVolume = volume;
+        
+        console.log(`Volume set for ${this.video.id}: ${volume}`);
+    }
+
+    /**
+     * 音量取得
+     */
+    getVolume() {
+        return this.video ? this.video.volume : 0;
+    }
+
+    /**
+     * 音声設定の有効/無効
+     */
+    setAudioEnabled(enabled) {
+        this.audioEnabled = enabled;
+        
+        if (enabled && this.playing) {
+            this.enableAudio();
+        } else if (!enabled) {
+            this.disableAudio();
+        }
+        
+        console.log(`Audio ${enabled ? 'enabled' : 'disabled'} for ${this.video.id}`);
     }
 
     /**

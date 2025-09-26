@@ -24,7 +24,12 @@
             </nav>
         </div>
         <div class="header-debug">
-            <p id="status-text">AR動画を読み込む手順</p>
+            <p id="status-text">ステータス: 待機中</p>
+            <div class="audio-controls" id="audio-controls" style="display: none;">
+                <button class="audio-toggle" id="audio-toggle">🔊</button>
+                <input type="range" class="volume-slider" id="volume-slider" 
+                    min="0" max="1" step="0.1" value="0.8">
+            </div>
         </div>
     </header>
 

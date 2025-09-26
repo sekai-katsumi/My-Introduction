@@ -351,11 +351,16 @@ class ARSceneManager {
         // Chrome/Edge用の追加初期化遅延
         setTimeout(() => {
             // マーカーイベントをバインド（1件表示モード）
-            this.instances.forEach(({ arMarker, markerId, offset }) => {
-                arMarker.bindEvents();
-                console.log(`Marker events bound: ${markerId} in single display mode`);
-            });
-    
+            this.instances.forEach(({ arMarker, markerId, offset, videoPlayer }) => {
+            arMarker.bindEvents();
+            
+            // 音声設定を適用
+            videoPlayer.setAudioEnabled(true);
+            videoPlayer.setVolume(0.8);
+            
+            console.log(`Marker events bound: ${markerId} in single display mode with audio`);
+        });
+
             // ローディング非表示
             this.loadingManager.hide();
             this.statusDisplay.update("ステータス: マーカーを探しています...");
