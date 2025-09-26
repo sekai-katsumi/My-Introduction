@@ -3,8 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="WebARを利用して、マーカーを読み取ると動画が再生されるAR体験ができます。スマホカメラで手軽に体験が可能です。">
 
-    <title>AR Video | TOP</title>
+
+    <title>WebAR動画 | TOP</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="./css/style.css" />
@@ -36,13 +38,13 @@
     <header class="fixed-header">
         <div class="header-content">
             <div class="header-logo">
-                <a href="./index.html">LOGO</a>
+                <a href="./index.html">WebAR</a>
             </div>
             <nav class="header-nav">
                 <ul>
                     <li><a href="./guide.html">使い方</a></li>
                     <li><a href="./benefit.html">特典</a></li>
-                    <li><a href="./infomation.html">動作環境</a></li>
+                    <li><a href="./information.html">動作環境</a></li>
                 </ul>
             </nav>
         </div>
@@ -245,6 +247,19 @@
             console.log("Event listeners attached with single marker debug controls");
             console.log("Debug keys: d=debug info, c=current marker, s=single mode status");
         });
+    </script>
+
+    <!-- Google向けSEO: JSON-LD構造化データ -->
+    <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "WebAR Video Experience",
+    "operatingSystem": "Android, iOS",
+    "applicationCategory": "AugmentedRealityApplication",
+    "description": "マーカーを読み取ると動画が再生されるWebAR体験アプリ",
+    "url": "https://example.com/"
+    }
     </script>
 </body>
 </html>

@@ -198,7 +198,7 @@ body:not(.scrollable-page) {
     left: 0;
 }
 
-/* スクロール可能なページ（guide.html, infomation.html等）用のスタイル */
+/* スクロール可能なページ（guide.html, information.html等）用のスタイル */
 body.scrollable-page {
     overflow-y: auto;
     overflow-x: hidden;
@@ -228,7 +228,7 @@ body.scrollable-page {
     text-align: center;
     padding: 2rem;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
+    border-radius: 14px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     max-width: 400px;

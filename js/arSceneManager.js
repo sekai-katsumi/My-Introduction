@@ -16,22 +16,14 @@ class ARSceneManager {
             "marker-03": { video: "#video-03", plane: "#plane-03" }
         };
 
-        // マーカー別の強制位置オフセット設定
-        // this.markerOffsets = {
-        //     "marker-01": { x: 0, y: 0, z: 0 },      // 中央（基準マーカー）
-        //     "marker-02": { x: 1, y: 0, z: 0 },      // 右に1単位移動
-        //     "marker-03": { x: -1, y: 0, z: 0 }      // 左に1単位移動
-        // };
         // 1件表示用：全てのマーカーを中央に配置
         this.markerOffsets = {
-            "marker-01": { x: 0, y: 0, z: 0 },      // 中央配置
-            "marker-02": { x: 0, y: 0, z: 0 },      // 中央配置
-            "marker-03": { x: 0, y: 0, z: 0 }       // 中央配置
+            "marker-01": { x: 0, y: 0, z: 0 },
+            "marker-02": { x: 0, y: 0, z: 0 },
+            "marker-03": { x: 0, y: 0, z: 0 }
         };
 
         // 動的オフセット調整フラグ（1件表示用に無効化）
-        // this.enableDynamicSeparation = true;
-        // this.conflictDetectionEnabled = true;
         this.enableDynamicSeparation = false;  // 1件表示時は位置調整不要
         this.conflictDetectionEnabled = false; // 競合検出も無効化
 
@@ -58,7 +50,7 @@ class ARSceneManager {
             // ローディング表示
             this.loadingManager.show();
             this.statusDisplay.update("ステータス: カメラ初期化中...");
-
+    
             // Android Chrome/Edge専用の処理
             const isAndroidChrome = /Android.*Chrome|Android.*Edge/i.test(navigator.userAgent);
             
@@ -190,7 +182,7 @@ class ARSceneManager {
             
             // AR.jsイベントリスナー設定
             this.setupAREvents();
-
+    
             // 衝突検出システム開始
             if (this.conflictDetectionEnabled) {
                 this.startConflictDetection();
@@ -252,7 +244,7 @@ class ARSceneManager {
             const videoPlane = new VideoPlane(refs.plane, videoPlayer, markerOffset);
             
             const arMarker = new ARMarker(`#${markerId}`, videoPlane, this.statusDisplay);
-
+    
             this.instances.push({ 
                 markerId, 
                 videoPlayer, 
@@ -260,7 +252,7 @@ class ARSceneManager {
                 arMarker,
                 offset: markerOffset
             });
-
+    
             console.log(`Instance initialized: ${markerId} with offset:`, markerOffset);
         });
         
@@ -322,19 +314,19 @@ class ARSceneManager {
                 this.onARReady();
             }
         }, maxTimeout);
+    }
 
-        /**
-         * マーカー状態チェック（デバッグ用）
-         */
-        checkMarkerStatus() {
-            console.log("=== Marker Status Check ===");
-            this.instances.forEach(({ markerId, arMarker }) => {
-                const markerElement = document.querySelector(`#${markerId}`);
-                const isVisible = markerElement ? markerElement.object3D.visible : false;
-                console.log(`${markerId}: detected=${arMarker.isMarkerDetected()}, visible=${isVisible}`);
-            });
-            console.log("===========================");
-
+    /**
+     * マーカー状態チェック（デバッグ用）
+     */
+    checkMarkerStatus() {
+        console.log("=== Marker Status Check ===");
+        this.instances.forEach(({ markerId, arMarker }) => {
+            const markerElement = document.querySelector(`#${markerId}`);
+            const isVisible = markerElement ? markerElement.object3D.visible : false;
+            console.log(`${markerId}: detected=${arMarker.isMarkerDetected()}, visible=${isVisible}`);
+        });
+        console.log("===========================");
     }
 
     /**
@@ -345,7 +337,7 @@ class ARSceneManager {
         
         this.isARReady = true;
         console.log("AR ready, binding marker events with single display mode");
-
+    
         // Chrome/Edge用の追加初期化遅延
         setTimeout(() => {
             // マーカーイベントをバインド（1件表示モード）
@@ -353,7 +345,7 @@ class ARSceneManager {
                 arMarker.bindEvents();
                 console.log(`Marker events bound: ${markerId} in single display mode`);
             });
-
+    
             // ローディング非表示
             this.loadingManager.hide();
             this.statusDisplay.update("ステータス: マーカーを探しています...");
