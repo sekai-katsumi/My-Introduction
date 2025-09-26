@@ -268,9 +268,17 @@ class ARSceneManager {
             console.log("A-Frame render started");
             if (!this.isARReady) {
                 const isAndroidChrome = /Android.*Chrome|Android.*Edge/i.test(navigator.userAgent);
-                const delay = isAndroidChrome ? 3000 : 1000; // Android Chrome/Edge用に長い遅延
+                const delay = isAndroidChrome ? 4000 : 2000; // Android Chrome/Edge用に長い遅延
                 setTimeout(() => this.onARReady(), delay);
             }
+        });
+
+        // ビデオ読込完了
+        this.arScene.addEventListener("arjs-video-loaded", () => {
+            console.log("AR.js video loaded successfully");
+            setTimeout(() => {
+                if (!this.isARReady) this.onARReady();
+            }, 1000);
         });
 
         // カメラソース準備完了イベント
@@ -351,7 +359,42 @@ class ARSceneManager {
             this.statusDisplay.update("ステータス: マーカーを探しています...");
             
             console.log("AR Scene Manager fully initialized with single marker display mode");
+
+            // デバッグ用：マーカー検出テストを実行
+            setTimeout(() => {
+                this.forceMarkerDetectionTest();
+            }, 2000);
+
         }, 1000); // Chrome/Edge用に1秒遅延
+    }
+
+    /**
+     * マーカー検出を強制的にテスト
+     */
+    forceMarkerDetectionTest() {
+        console.log("Force testing marker detection...");
+        
+        // すべてのマーカーの状態をチェック
+        this.instances.forEach(({ markerId, arMarker }) => {
+            const markerElement = document.querySelector(`#${markerId}`);
+            if (markerElement) {
+                console.log(`Testing marker: ${markerId}`);
+                
+                // マーカーエレメントに直接イベントをトリガー
+                const testEvent = new CustomEvent('markerFound', {
+                    detail: { marker: markerElement }
+                });
+                markerElement.dispatchEvent(testEvent);
+                
+                // 1秒後にテストイベントをクリア
+                setTimeout(() => {
+                    const lostEvent = new CustomEvent('markerLost', {
+                        detail: { marker: markerElement }
+                    });
+                    markerElement.dispatchEvent(lostEvent);
+                }, 1000);
+            }
+        });
     }
 
     /**

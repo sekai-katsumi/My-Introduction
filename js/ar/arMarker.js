@@ -48,6 +48,28 @@ class ARMarker {
         });
 
         console.log(`Events bound for marker: ${this.marker.id}`);
+
+        // AR.js固有のイベントも追加でリッスン
+        if (this.marker.components && this.marker.components['arjs-anchor']) {
+            console.log(`AR.js anchor component found for: ${this.marker.id}`);
+        }
+
+        // マーカーエレメントの準備完了チェック
+        const checkMarkerReady = () => {
+            if (this.marker.object3D && this.marker.object3D.visible !== undefined) {
+                console.log(`Marker object3D ready: ${this.marker.id}`);
+                return true;
+            }
+            return false;
+        };
+
+        if (!checkMarkerReady()) {
+            setTimeout(() => {
+                if (checkMarkerReady()) {
+                    console.log(`Delayed marker ready: ${this.marker.id}`);
+                }
+            }, 1000);
+        }
     }
 
     /**
