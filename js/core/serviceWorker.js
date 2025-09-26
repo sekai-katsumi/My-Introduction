@@ -1,14 +1,13 @@
-// sw.js
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open('webar-cache-v1').then((cache) => {
         return cache.addAll([
-            './',
-            './index.html',
-            './css/style.css',
-            './js/video/videoPlayer.js',
-            './assets/videos/video-01.mp4',
-            // './assets/icons/icon-192.png'
+            '/',
+            '/index.html',
+            '/css/style.css',
+            '/js/video/videoPlayer.js',
+            '/assets/videos/video-01.mp4',
+            '/assets/images/icon-192.png'
         ]);
         })
     );
