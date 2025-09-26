@@ -54,13 +54,23 @@ class LoadingManager {
         
         this.pctEl.innerText = `Loading: ${Math.round(percentage)}%`;
         
-        // 進捗バーの更新（存在する場合）
-        const progressBar = this.el.querySelector(".progress-bar");
-        if (progressBar) {
-            progressBar.style.width = `${percentage}%`;
+        // プログレスバーの更新
+        const progressFill = this.el.querySelector(".progress-fill");
+        if (progressFill) {
+            progressFill.style.width = `${percentage}%`;
         }
         
         console.log(`Loading progress: ${percentage}%`);
+    }
+
+    /**
+     * ローディングステータステキストを更新
+     */
+    updateStatus(statusText) {
+        const statusEl = this.el.querySelector(".loading-status");
+        if (statusEl) {
+            statusEl.innerText = statusText;
+        }
     }
 
     /**

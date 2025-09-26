@@ -31,7 +31,7 @@
     --gradient-info-light: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
     --gradient-start-ar: linear-gradient(45deg, #ff6b6b, #ee5a24);
     --gradient-play-btn: linear-gradient(45deg, var(--primary), var(--primary-light));
-    --gradient-overlay-ar: linear-gradient(135deg, #ffeec8 0%, #271000 100%);
+    --gradient-overlay-ar: linear-gradient(135deg, #c26fb4 0%, #150a55 100%);
 
     /* ステータスカラー */
     --status-success: #10b981;
@@ -231,7 +231,7 @@ body.scrollable-page {
     border-radius: 14px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    max-width: 400px;
+    max-width: 480px;
     margin: 0 1rem;
 }
 
@@ -278,19 +278,53 @@ body.scrollable-page {
     z-index: 99;
 }
 
-.spinner {
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    border-top: 4px solid #667eea;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1.2s linear infinite;
-    margin-bottom: 20px;
+.progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    min-width: 300px;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.loading-status {
+    color: var(--white);
+    font-size: var(--font-size-sm);
+    opacity: 0.8;
+    text-align: center;
 }
 
 #loading-percentage {

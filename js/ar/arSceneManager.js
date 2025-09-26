@@ -50,6 +50,7 @@ class ARSceneManager {
             // ローディング表示
             this.loadingManager.show();
             this.statusDisplay.update("ステータス: カメラ初期化中...");
+            this.loadingManager.updateProgress(50);
     
             // Android Chrome/Edge専用の処理
             const isAndroidChrome = /Android.*Chrome|Android.*Edge/i.test(navigator.userAgent);
@@ -75,6 +76,7 @@ class ARSceneManager {
         try {
             // カメラ権限を先に確認・取得
             this.statusDisplay.update("ステータス: カメラアクセス確認中...");
+            this.loadingManager.updateProgress(50);
             
             const stream = await navigator.mediaDevices.getUserMedia({ 
                 video: { 
